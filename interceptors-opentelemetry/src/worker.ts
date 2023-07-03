@@ -9,14 +9,32 @@ import {
 } from '@temporalio/interceptors-opentelemetry/lib/worker';
 import * as activities from './activities';
 
+import * as Sentry from '@sentry/node';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { SentrySpanProcessor, SentryPropagator } from '@sentry/opentelemetry-node';
+
 async function main() {
+  Sentry.init({
+    dsn: '', // not needed to see debug logs
+    environment: 'development',
+    tracesSampleRate: 1.0,
+    instrumenter: 'otel',
+    debug: true,
+  });
+
   const resource = new Resource({
     [SemanticResourceAttributes.SERVICE_NAME]: 'interceptors-sample-worker',
   });
   // Export spans to console for simplicity
-  const exporter = new ConsoleSpanExporter();
+  // const exporter = new ConsoleSpanExporter();
+  const exporter = new OTLPTraceExporter();
 
-  const otel = new NodeSDK({ traceExporter: exporter, resource });
+  const otel = new NodeSDK({
+    traceExporter: exporter,
+    resource,
+    spanProcessor: new SentrySpanProcessor(),
+    textMapPropagator: new SentryPropagator(),
+  });
   await otel.start();
 
   // Silence the Worker logs to better see the span output in this sample

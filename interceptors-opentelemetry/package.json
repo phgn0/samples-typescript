@@ -21,9 +21,12 @@
   },
   "dependencies": {
     "@opentelemetry/core": "^1.8.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.40.0",
     "@opentelemetry/resources": "^1.8.0",
-    "@opentelemetry/sdk-node": "^0.33.0",
+    "@opentelemetry/sdk-node": "^0.40.0",
     "@opentelemetry/sdk-trace-base": "^1.8.0",
+    "@sentry/node": "^7.57.0",
+    "@sentry/opentelemetry-node": "^7.57.0",
     "@temporalio/activity": "1.7.0",
     "@temporalio/client": "1.7.0",
     "@temporalio/interceptors-opentelemetry": "1.7.0",
